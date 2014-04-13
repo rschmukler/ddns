@@ -6,7 +6,12 @@ func init() {
 }
 
 type IWantMyNameProvider struct {
+  username string
+  password string
 }
 
-func (p *IWantMyNameProvider) Update(config map[string]string) {
+func (p *IWantMyNameProvider) LoadConfig(config map[string]string) {
+}
+
+func (p *IWantMyNameProvider) Update() {
 }

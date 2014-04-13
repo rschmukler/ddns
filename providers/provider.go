@@ -3,7 +3,8 @@ package providers
 var providers map[string]Provider = make(map[string]Provider)
 
 type Provider interface {
-  Update(config map[string]string)
+  LoadConfig(config map[string]string)
+  Update()
 }
 
 func GetProvider(name string) (Provider, bool) {

@@ -47,6 +47,7 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
       log.Fatalf("Could not find provider specified (%s)\nValid Providers are:\n%s", c.String("provider"), providers.ListProviders())
     }
 
-    provider.Update(app.Config[c.String("provider")])
+    provider.LoadConfig(app.Config[c.String("provider")])
+    provider.Update()
   }
 }
