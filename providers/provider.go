@@ -3,7 +3,8 @@ package providers
 var providers map[string]Provider = make(map[string]Provider)
 
 type Provider interface {
-  LoadConfig(config map[string]string)
+  GenerateConfig(config map[string]map[string]string)
+  ReadConfig(config map[string]string)
   Update()
 }
 
