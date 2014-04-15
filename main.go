@@ -56,7 +56,9 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
       config = app.Config[c.String("provider")]
     }
 
+    ip := c.String("ip")
+
     provider.ReadConfig(config)
-    provider.Update()
+    provider.Update(domain, ip)
   }
 }

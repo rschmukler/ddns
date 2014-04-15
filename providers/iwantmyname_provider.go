@@ -2,7 +2,7 @@ package providers
 
 import (
   "fmt"
-  "http"
+  "net/http"
   "github.com/howeyc/gopass"
 )
 
@@ -38,11 +38,11 @@ func (p *IWantMyNameProvider) ReadConfig(config map[string]string) {
 }
 
 func (p *IWantMyNameProvider) Update(domain, ip string) {
-  client := &http.Client
+  client := &http.Client{}
 
-  url := fmt.Stringf("https://iwantmyname.com/basicauth/ddns?hostname=%s&myip=%s", domain, ip)
-  req := http.NewRequest("GET", url)
+  url := fmt.Sprintf("https://iwantmyname.com/basicauth/ddns?hostname=%s&myip=%s", domain, ip)
+  req, _ := http.NewRequest("GET", url, nil)
   req.SetBasicAuth(p.username, p.password)
 
-  resp := client.Do(req)
+  client.Do(req)
 }
