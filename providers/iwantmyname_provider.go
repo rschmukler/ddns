@@ -31,7 +31,7 @@ func (p *IWantMyNameProvider) GenerateConfig(config map[string]map[string]string
 
   domains, present = myConfig["domains"]
   if present {
-    fmt.Printf("\tDomains: (%s)", domains)
+    fmt.Printf("\tDomains: (%s) ", domains)
   } else {
     fmt.Printf("\tDomains: ")
   }
@@ -43,7 +43,7 @@ func (p *IWantMyNameProvider) GenerateConfig(config map[string]map[string]string
 
   username, present = myConfig["username"]
   if present {
-    fmt.Printf("\tUsername: (%s)", username)
+    fmt.Printf("\tUsername: (%s) ", username)
   } else {
     fmt.Printf("\tUsername: ")
   }
@@ -56,7 +56,7 @@ func (p *IWantMyNameProvider) GenerateConfig(config map[string]map[string]string
   password, present = myConfig["password"]
 
   if present  {
-    fmt.Printf("\tPassword: (enter to keep)")
+    fmt.Printf("\tPassword: (enter to keep) ")
   } else {
     fmt.Printf("\tPassword: ")
   }
