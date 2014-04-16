@@ -26,6 +26,7 @@ func main() {
       Flags: []cli.Flag {
         cli.StringFlag{Name: "ip-address, i", Usage: "IP Address to report"},
         cli.StringFlag{"provider, p", "iwantmyname.com", "API provider"},
+        cli.BoolFlag{"configure, c", "Reconfigure"},
       },
     },
   }
@@ -35,11 +36,7 @@ func main() {
 
 func update(app *app.DDNSApp) func(c *cli.Context) {
   return func(c *cli.Context) {
-    domain := c.Args().First();
-
-    if len(domain) == 0  {
-      log.Fatal("No domain provided. Quitting...")
-    }
+    reconfigure := c.Bool("configure")
 
     provider, present := providers.GetProvider(c.String("provider"))
 
@@ -49,7 +46,7 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
 
     config, present := app.Config[c.String("provider")]
 
-    if !present {
+    if !present || reconfigure {
       log.Printf("Please enter the following information: ")
       provider.GenerateConfig(app.Config)
       app.SaveConfig()
@@ -59,6 +56,6 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
     ip := c.String("ip")
 
     provider.ReadConfig(config)
-    provider.Update(domain, ip)
+    provider.Update(ip)
   }
 }

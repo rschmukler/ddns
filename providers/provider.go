@@ -5,7 +5,7 @@ var providers map[string]Provider = make(map[string]Provider)
 type Provider interface {
   GenerateConfig(config map[string]map[string]string)
   ReadConfig(config map[string]string)
-  Update(domain, ip string)
+  Update(ip string)
 }
 
 func GetProvider(name string) (Provider, bool) {
