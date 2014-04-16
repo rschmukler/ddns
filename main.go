@@ -36,17 +36,17 @@ func main() {
 
 func update(app *app.DDNSApp) func(c *cli.Context) {
   return func(c *cli.Context) {
-    reconfigure := c.Bool("configure")
 
-    provider, present := providers.GetProvider(c.String("provider"))
+    provider, providerPresent := providers.GetProvider(c.String("provider"))
 
-    if !present {
+    if !providerPresent {
       log.Fatalf("Could not find provider specified (%s)\nValid Providers are:\n%s", c.String("provider"), providers.ListProviders())
     }
 
-    config, present := app.Config[c.String("provider")]
+    config, configPresent := app.Config[c.String("provider")]
 
-    if !present || reconfigure {
+    reconfigure := c.Bool("configure")
+    if !configPresent || reconfigure {
       log.Printf("Please enter the following information: ")
       provider.GenerateConfig(app.Config)
       app.SaveConfig()
