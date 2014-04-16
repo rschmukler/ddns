@@ -11,12 +11,20 @@ import (
 type DDNSApp struct {
   *cli.App
   Config map[string]map[string]string
+  Updates chan DDNSUpdates
+}
+
+type DDNSUpdates struct {
+  Type string
+  From string
+  Message string
 }
 
 
 func NewDDNSApp() *DDNSApp {
   app := &DDNSApp{
     App: cli.NewApp(),
+    Updates: make(chan DDNSUpdates),
   }
   app.Name = "ddns"
   app.Usage = "Manage dynamic DNS"

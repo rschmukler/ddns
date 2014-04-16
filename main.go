@@ -56,6 +56,11 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
     ip := c.String("ip")
 
     provider.ReadConfig(config)
-    provider.Update(ip)
+    go provider.Update(ip, app.Updates)
+    printUpdate(<- app.Updates)
   }
+}
+
+func printUpdate(update app.DDNSUpdates) {
+  log.Printf("[%s] (%s) %s\n", update.Type, update.From, update.Message)
 }

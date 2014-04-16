@@ -1,9 +1,11 @@
 package providers
 
 import (
+  "io/ioutil"
   "fmt"
   "net/http"
   "github.com/howeyc/gopass"
+  "../app"
 )
 
 func init() {
@@ -78,7 +80,7 @@ func (p *IWantMyNameProvider) ReadConfig(config map[string]string) {
   p.domains = config["domains"];
 }
 
-func (p *IWantMyNameProvider) Update(ip string) {
+func (p *IWantMyNameProvider) Update(ip string, updates chan app.DDNSUpdates) {
   client := &http.Client{}
 
   url := fmt.Sprintf("https://iwantmyname.com/basicauth/ddns?hostname=%s", p.domains)
@@ -89,5 +91,24 @@ func (p *IWantMyNameProvider) Update(ip string) {
   req, _ := http.NewRequest("GET", url, nil)
   req.SetBasicAuth(p.username, p.password)
 
-  client.Do(req)
+  resp, err := client.Do(req)
+  if err != nil {
+    updates <- update("error", err.Error())
+  } else {
+    defer resp.Body.Close()
+    if(resp.StatusCode == 200) {
+      updates <- update("success", fmt.Sprintf("updated domains %s", p.domains))
+    } else {
+      body, _ := ioutil.ReadAll(resp.Body)
+      updates <- update("error", string(body))
+    }
+  }
+}
+
+func update(of, msg string) app.DDNSUpdates {
+  return app.DDNSUpdates{
+    of,
+    "iwantmyname.com",
+    msg,
+  }
 }

@@ -1,11 +1,15 @@
 package providers
 
+import (
+  "../app"
+)
+
 var providers map[string]Provider = make(map[string]Provider)
 
 type Provider interface {
   GenerateConfig(config map[string]map[string]string)
   ReadConfig(config map[string]string)
-  Update(ip string)
+  Update(ip string, updates chan app.DDNSUpdates)
 }
 
 func GetProvider(name string) (Provider, bool) {
