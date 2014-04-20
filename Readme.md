@@ -8,7 +8,7 @@ Currently supports the following providers:
 
 ## Installation
 
-Check out the [build](http://github.com/rschmukler/ddns/downloads) folder
+Check out the [build](http://github.com/rschmukler/ddns/tree/master/build) folder
 for the appropriate release.
 
 ## Usage
