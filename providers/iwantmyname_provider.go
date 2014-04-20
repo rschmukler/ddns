@@ -5,7 +5,7 @@ import (
   "fmt"
   "net/http"
   "github.com/rschmukler/go-prompt"
-  "../app"
+  "github.com/rschmukler/ddns/app"
 )
 
 func init() {

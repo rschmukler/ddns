@@ -1,7 +1,7 @@
 package providers
 
 import (
-  "../app"
+  "github.com/rschmukler/ddns/app"
 )
 
 var providers map[string]Provider = make(map[string]Provider)

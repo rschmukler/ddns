@@ -6,8 +6,8 @@ import (
   "time"
   "github.com/codegangsta/cli"
   "github.com/rschmukler/go-ip-checker"
-  "./app"
-  "./providers"
+  "github.com/rschmukler/ddns/app"
+  "github.com/rschmukler/ddns/providers"
 )
 
 const VERSION = "0.1.0"
