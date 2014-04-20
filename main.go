@@ -59,9 +59,11 @@ func run(myApp *app.DDNSApp) func(c *cli.Context) {
     provider, ip := setupProvider(myApp, c)
     runEvery := time.Minute * time.Duration(c.Int("every"))
 
+    ipChanged := ipchecker.Poll(runEvery)
+
     for {
       select {
-        case ip = <-ipchecker.Poll(runEvery):
+        case ip = <-ipChanged:
           printUpdate(app.DDNSUpdates{"Info", "App", "Updating DDNS to ip " + ip})
           go provider.Update(ip, myApp.Updates)
         case update := <-myApp.Updates:
