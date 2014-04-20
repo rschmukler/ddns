@@ -3,7 +3,9 @@ package main
 import (
   "os"
   "log"
+  "time"
   "github.com/codegangsta/cli"
+  "github.com/rschmukler/go-ip-checker"
   "./app"
   "./providers"
 )
@@ -29,6 +31,16 @@ func main() {
         cli.BoolFlag{"configure, c", "Reconfigure"},
       },
     },
+    {
+      Name: "run",
+      Usage: "run",
+      Action: run(app),
+      Flags: []cli.Flag {
+        cli.StringFlag{Name: "ip-address, i", Usage: "IP Address to report"},
+        cli.StringFlag{"provider, p", "iwantmyname.com", "API provider"},
+        cli.IntFlag{"every, e", 10, "Check every"},
+      },
+    },
   }
   app.Run(os.Args)
 
@@ -36,7 +48,30 @@ func main() {
 
 func update(app *app.DDNSApp) func(c *cli.Context) {
   return func(c *cli.Context) {
+    provider, ip := setupProvider(app, c)
+    go provider.Update(ip, app.Updates)
+    printUpdate(<- app.Updates)
+  }
+}
 
+func run(myApp *app.DDNSApp) func(c *cli.Context) {
+  return func(c *cli.Context) {
+    provider, ip := setupProvider(myApp, c)
+    runEvery := time.Minute * time.Duration(c.Int("every"))
+
+    for {
+      select {
+        case ip = <-ipchecker.Poll(runEvery):
+          printUpdate(app.DDNSUpdates{"Info", "App", "Updating DDNS to ip " + ip})
+          go provider.Update(ip, myApp.Updates)
+        case update := <-myApp.Updates:
+          go printUpdate(update)
+      }
+    }
+  }
+}
+
+func setupProvider(app *app.DDNSApp, c *cli.Context) (providers.Provider, string) {
     provider, providerPresent := providers.GetProvider(c.String("provider"))
 
     if !providerPresent {
@@ -52,13 +87,12 @@ func update(app *app.DDNSApp) func(c *cli.Context) {
       app.SaveConfig()
       config = app.Config[c.String("provider")]
     }
-
     ip := c.String("ip")
-
+    if len(ip) == 0  {
+      ip = ipchecker.Check()
+    }
     provider.ReadConfig(config)
-    go provider.Update(ip, app.Updates)
-    printUpdate(<- app.Updates)
-  }
+    return provider, ip
 }
 
 func printUpdate(update app.DDNSUpdates) {
