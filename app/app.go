@@ -1,7 +1,6 @@
 package app
 
 import (
-  "os"
   "io/ioutil"
   "encoding/json"
 
@@ -34,7 +33,7 @@ func NewDDNSApp() *DDNSApp {
   return app
 }
 
-var CONFIG_PATH = os.Getenv("HOME") + "/.ddns.json"
+var CONFIG_PATH = "/etc/ddns.json"
 
 func (d *DDNSApp) LoadConfig() {
 
